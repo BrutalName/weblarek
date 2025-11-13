@@ -5,6 +5,7 @@ import { Buyer } from "./components/Models/buyer";
 import { apiProducts } from "./utils/data";
 import { ApiConnect } from "./components/Models/apiConnect";
 import { API_URL } from "./utils/constants";
+import { IInfoCheckToBuy } from "./types";
 
 const productsModel = new Сatalog();
 
@@ -13,7 +14,7 @@ productsModel.detailedProduct = apiProducts.items[1];
 
 console.log(`Массив товаров из каталога: `, productsModel.allProducts);
 console.log(`выбранный товарв из каталога: `, productsModel.detailedProduct);
-console.log(`выбранный товар по ID: `, productsModel.getProduct(apiProducts.items[2].id));
+console.log(`выбранный товар по ID: `, productsModel.getProductById(apiProducts.items[2].id));
 
 const basketModel = new Basket();
 

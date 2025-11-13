@@ -21,13 +21,12 @@ export class Basket {
     }
 
     get priseToPay(): number {
-        let totalPrise = 0
-        this._productsToBuyList.forEach(item => {
+        return this._productsToBuyList.reduce((sum, item) => {
             if (item.price !== null) {
-                totalPrise += item.price;
+                return sum + item.price;
             }
-        })
-        return totalPrise
+            return sum;
+        }, 0);
     }
 
     get productCounter(): number {

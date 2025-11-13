@@ -29,14 +29,14 @@ export interface IBuyer {
     address: string;
 }
 
-export interface IGetApiItems extends ITotal {
+export interface IOrderResponseItems extends ITotal {
     items: IProduct[];
 }
 
-export interface IGetApiPrise extends ITotal, IId {}
+export interface IOrderResponsePrise extends ITotal, IId {}
 
-export interface IErrApiPrise {
+export interface IErrorResponsePrise {
     error: string
 }
 
-export interface IPushApiItems extends IBuyer, IGetApiItems {}
+export interface IInfoCheckToBuy extends IBuyer, IOrderResponseItems {}

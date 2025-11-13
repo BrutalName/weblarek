@@ -175,4 +175,4 @@ Presenter - презентер содержит основную логику п
 
 Методы:
 `getProduct(): Promise<IProduct[]>` - получает Promise с массивом товаров
-`postProduct(chek: IPushApiItems): void` - передает данные о покупателе и выбранных товарах для сверки с сервером
+`postProduct(chek: IInfoCheckToBuy): Promise<IOrderResponsePrise | IErrorResponsePrise>` - передает данные о покупателе и выбранных товарах для сверки с сервером, и возвращает Promise с информацией, или Promise с причиной ошибки
