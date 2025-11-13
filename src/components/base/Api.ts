@@ -1,6 +1,6 @@
-type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
+import { IApi, ApiPostMethods } from "../../types";
 
-export class Api {
+export class Api implements IApi {
     readonly baseUrl: string;
     protected options: RequestInit;
 
@@ -34,4 +34,5 @@ export class Api {
             body: JSON.stringify(data)
         }).then(this.handleResponse<T>);
     }
+
 }
