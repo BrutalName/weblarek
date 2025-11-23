@@ -176,3 +176,183 @@ Presenter - презентер содержит основную логику п
 Методы:
 `getProduct(): Promise<IProduct[]>` - получает Promise с массивом товаров
 `postProduct(chek: IInfoCheckToBuy): Promise<IOrderResponsePrise | IErrorResponsePrise>` - передает данные о покупателе и выбранных товарах для сверки с сервером, и возвращает Promise с информацией, или Promise с причиной ошибки
+
+
+## Слой представления
+
+
+#### Класс Modal
+
+DOM элемент для отображения полученых обьектов
+
+    constructor(protected events: IEvents)
+
+Ивенты для кнопки:
+    ('modal:close')
+
+Методы:
+        open() - открыть окно
+        close() - закрыть окно
+        addContent(content: HTMLElement) - добавить контент
+        clear() - очистить контунт
+
+
+#### Класс Gallery
+
+Класс отображения элементов каталога товаров
+
+    constructor(protected events: IEvents)
+
+Методы:
+        set Gallery(items: HTMLElement) - добавить элемент к галерее
+
+
+
+#### Класс TemplateBasket
+
+Элемент для отображения корзины покупок
+
+    constructor(protected events: IEvents)
+
+Ивенты для кнопки:
+    ('order:ready')
+
+содержит методы:
+
+    basketList(items: HTMLElement[]) - массив элемнтов товаров для отображения
+    set prise (prise: number) - установить сумму
+    set basketIsEmpty (boolean: boolean) - отключить кнопку
+    render(data?: Partial<T>): HTMLElement - Вернуть корневой DOM-элемент
+
+
+#### Класс TemplateCardCatalog
+
+Класс отображени внешнего вида товаров в каталоге
+
+constructor(protected events: IEvents)
+
+Ивенты для кнопки:
+    ('card:open', this.container)
+
+содержит методы:
+
+    set cardImage (src: string) - установить картинку
+    set cardCategory (category: string) - установить категорию
+    set cardPrice (value: string) - установить цену
+    set cardTitle (name: string) - название
+    set cardId (Id: string) - id товара
+    render(data?: Partial<T>): HTMLElement - Вернуть корневой DOM-элемент
+
+#### Класс TemplateCardSelected
+
+Класс отображени выбранного товара
+
+constructor(protected events: IEvents)
+
+Ивенты для кнопки:
+    ('card:inBasket', this.container);
+    ('card:inBasketText', this.buttonCard)
+
+содержит методы:
+
+    set cardImage (src: string) - установить картинку
+    set cardCategory (category: string) - установить категорию
+    set cardPrice (value: string) - установить цену
+    set cardTitle (name: string) - название
+    set cardId (Id: string) - id товара
+    set cardDescription (text: string)- установить описание
+    set buttonText(text: string) - текст кнопки покупки
+    set itemOnSale(boolean: boolean) - отключить кнопку покупки
+    render(data?: Partial<T>): HTMLElement - Вернуть корневой DOM-элемент
+
+
+#### Класс TemplateCardBasket
+
+Класс отображени товаров в корзине
+
+constructor(protected events: IEvents)
+
+Ивенты для кнопки:
+    ('card:remove', this.container)
+
+содержит методы:
+
+    set cardIndex (src: string) - номер в списке корзины
+    set cardPrice (value: string) - установить цену
+    set cardTitle (name: string) - название
+    set cardId (Id: string) - id товара
+    render(data?: Partial<T>): HTMLElement - Вернуть корневой DOM-элемент
+
+
+#### Класс Header
+
+Класс для работы с шапкой сайта
+
+constructor(protected events: IEvents)
+
+Ивенты для кнопки:
+    ('basket:open')
+
+содержит методы:
+
+    set counter(value: number) - установить значок количество товаров в карзине
+
+
+#### Класс TemplateOrder
+
+Класс для работы с ипутами формы адреса и способа оплаты
+
+constructor(protected events: IEvents)
+
+Ивенты для кнопки:
+    ('order:buttonActive', button)
+    ('order:toggleButtonActive', this.buttonPaiementOrder)
+    ('order:inputAddress', this._address)
+    ('order:continue', this.buttonOrder)
+
+    ('order:continueForm', this.buttonOrder)
+
+содержит методы:
+
+    set address (text: string) - установить адресс
+    set paiment (text: string) - установить способ оплаты
+    set disabledButtonOrder (boolean: boolean) - отключить кнопку
+    set infoErrors (text: string) - установить ошибку валидации
+    render(data?: Partial<T>): HTMLElement - Вернуть корневой DOM-элемент
+
+
+#### Класс TemplateContacts
+
+Класс для работы с ипутами формы телефона и емайли
+
+constructor(protected events: IEvents)
+
+Ивенты для кнопки:
+    ('order:inputEmail', this._email)
+    ('order:inputPhone', this._phone)
+    ('order:end', this.buttonOrder)
+
+    ('order:doneForm', this.buttonOrder)
+
+содержит методы:
+
+    set email (text: string) - установить емайл
+    set phone (text: string) - установить телефон
+    set disabledButtonOrder (boolean: boolean) - отключить кнопку
+    set infoErrors (text: string) - установить ошибку валидации
+    render(data?: Partial<T>): HTMLElement - Вернуть корневой DOM-элемент
+
+
+#### Класс TemplateSuccess
+
+Класс формы успешной покупки
+
+constructor(protected events: IEvents)
+
+Ивенты для кнопки:
+    ('modal:close')
+
+содержит методы:
+
+    set totalPrice (value: number) - полученную итоговую
+    render(data?: Partial<T>): HTMLElement - Вернуть корневой DOM-элемент

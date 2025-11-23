@@ -19,3 +19,9 @@
 
 @use "variables" as *;
 @use "mixins";
+
+.basketIsEmpty {
+    width: 1.220px;
+    height: 35px;
+    opacity: 0.3; 
+}

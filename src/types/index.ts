@@ -14,12 +14,20 @@ interface IId {
     id: string;
 }
 
-export interface IProduct extends IId {
-    description: string;
-    image: string;
-    title: string;
-    category: string;
+interface IItemPriceAndTitle {
     price: number | null;
+    title: string;
+}
+
+interface IItemCategoryAndImage {
+    category: string;
+    image: string;
+}
+
+export interface IItem extends IItemPriceAndTitle, IItemCategoryAndImage {}
+
+export interface IProduct extends IItem, IId {
+    description: string;
 } 
 
 export interface IBuyer {
@@ -39,4 +47,14 @@ export interface IErrorResponsePrise {
     error: string
 }
 
-export interface IInfoCheckToBuy extends IBuyer, IOrderResponseItems {}
+export interface IInfoCheckToBuy extends IBuyer, ITotal {
+    items: string[]
+}
+
+export interface ICardCatalog extends IItem {}
+
+export interface ICardBasket extends IItemPriceAndTitle {}
+
+export interface ICardSelected extends IItem {
+    description: string;
+}

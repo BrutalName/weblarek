@@ -16,7 +16,7 @@ export class Сatalog {
         return this._allProductsList.find((product: IProduct) => product.id === id);
     }
 
-    set detailedProduct(product: IProduct) {
+    set detailedProduct(product: IProduct | null) {
         this._selectedProduct = product;
     }
 

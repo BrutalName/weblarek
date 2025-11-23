@@ -1,4 +1,4 @@
-import { ApiPostMethods, IProduct, IOrderResponseItems, IOrderResponsePrise, IErrorResponsePrise, IInfoCheckToBuy } from "../../types";
+import { IProduct, IOrderResponseItems, IOrderResponsePrise, IErrorResponsePrise, IInfoCheckToBuy } from "../../types";
 import {Api} from '../base/Api'
 
 
