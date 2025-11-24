@@ -47,7 +47,7 @@ export class TemplateCardCatalog extends Card<ICardCatalog> {
         this.category = ensureElement<HTMLElement>('.card__category', this.container)
 
         this.buttonCard.addEventListener('click', () => {
-            this.events.emit('card:open', this.container);
+            this.events.emit('card:open', {id: this.container.id});
         });
     }
     
@@ -81,8 +81,12 @@ export class TemplateCardSelected extends Card<ICardSelected> {
         this.description = ensureElement<HTMLElement>('.card__text', this.container)
 
         this.buttonCard.addEventListener('click', () => {
-            this.events.emit('card:inBasket', this.container);
-            this.events.emit('card:inBasketText', this.buttonCard)
+            this.events.emit('card:inBasket', {id: this.container.id});
+            if (this.buttonCard.textContent === 'В корзину') {
+                this.buttonCard.textContent = 'Удалить из корзины'
+            } else {
+                this.buttonCard.textContent = 'В корзину'
+            }
         });
     }
 
@@ -109,7 +113,7 @@ export class TemplateCardSelected extends Card<ICardSelected> {
         this.buttonCard.textContent = text
     }
 
-    set itemOnSale(boolean: boolean) {
+    set disabledButtonCard (boolean: boolean) {
         this.buttonCard.disabled = boolean
     }
 }
@@ -124,7 +128,7 @@ export class TemplateCardBasket extends Card<ICardBasket> {
         this.index = ensureElement<HTMLElement>('.basket__item-index', this.container)
 
         this.buttonCard.addEventListener('click', () => {
-            this.events.emit('card:remove', this.container);
+            this.events.emit('card:remove', {id: this.container.id});
         });
     }
 

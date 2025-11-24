@@ -204,7 +204,7 @@ DOM элемент для отображения полученых обьект
     constructor(protected events: IEvents)
 
 Методы:
-        set Gallery(items: HTMLElement) - добавить элемент к галерее
+        set gallery(items: HTMLElement) - добавить элемент к галерее
 
 
 
@@ -232,7 +232,7 @@ DOM элемент для отображения полученых обьект
 constructor(protected events: IEvents)
 
 Ивенты для кнопки:
-    ('card:open', this.container)
+    ('card:open', {id: this.container.id})
 
 содержит методы:
 
@@ -250,8 +250,7 @@ constructor(protected events: IEvents)
 constructor(protected events: IEvents)
 
 Ивенты для кнопки:
-    ('card:inBasket', this.container);
-    ('card:inBasketText', this.buttonCard)
+    ('card:inBasket', {id: this.container.id});
 
 содержит методы:
 
@@ -262,7 +261,7 @@ constructor(protected events: IEvents)
     set cardId (Id: string) - id товара
     set cardDescription (text: string)- установить описание
     set buttonText(text: string) - текст кнопки покупки
-    set itemOnSale(boolean: boolean) - отключить кнопку покупки
+    set disabledButtonCard(boolean: boolean) - отключить кнопку покупки
     render(data?: Partial<T>): HTMLElement - Вернуть корневой DOM-элемент
 
 
@@ -273,7 +272,7 @@ constructor(protected events: IEvents)
 constructor(protected events: IEvents)
 
 Ивенты для кнопки:
-    ('card:remove', this.container)
+    ('card:remove', {id: this.container.id})
 
 содержит методы:
 
@@ -305,12 +304,9 @@ constructor(protected events: IEvents)
 constructor(protected events: IEvents)
 
 Ивенты для кнопки:
-    ('order:buttonActive', button)
-    ('order:toggleButtonActive', this.buttonPaiementOrder)
-    ('order:inputAddress', this._address)
-    ('order:continue', this.buttonOrder)
-
-    ('order:continueForm', this.buttonOrder)
+    ('order:buttonActive', {name: button.name})
+    ('order:inputAddress', {address: this._address.value})
+    ('order:nextForm')
 
 содержит методы:
 
@@ -328,11 +324,9 @@ constructor(protected events: IEvents)
 constructor(protected events: IEvents)
 
 Ивенты для кнопки:
-    ('order:inputEmail', this._email)
-    ('order:inputPhone', this._phone)
-    ('order:end', this.buttonOrder)
-
-    ('order:doneForm', this.buttonOrder)
+    ('order:inputEmail', {email: this._email.value})
+    ('order:inputPhone', {phone: this._phone.value})
+    ('order:doneForm')
 
 содержит методы:
 

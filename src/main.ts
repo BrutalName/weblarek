@@ -17,18 +17,14 @@ import { IInfoCheckToBuy } from "./types";
 import { EventEmitter } from "./components/base/Events";
 
 import {
-    ClearSuccess,
-    DisabledButton,
-    CheckFormErrors,
-    CheckFinalFormErrors,
-    AddToBasket,
-    RemoveFromBasket,
-    CheckBasket,
+    clearSuccess,
+    disabledButtonForm,
+    addToBasket,
+    removeFromBasket,
     refreshBasket,
-    OpenBasket,
-    OpenCard,
-    CloseModal,
-    OpenForm,
+    openBasket,
+    openCard,
+    openForm,
     getApiProduct
 } from './components/base/Modal'
 
@@ -41,7 +37,7 @@ const basketModel = new Basket();
 
 const iAmBuyer = new Buyer();
 
-const ApiItems = new ApiConnect(API_URL);
+const apiItems = new ApiConnect(API_URL);
 const gallery = new Gallery();
 const model = new Modal(events)
 const basket = new TemplateBasket(events)
@@ -49,22 +45,21 @@ const formAdressAndPaiment = new TemplateOrder(events)
 const formContacts = new TemplateContacts(events)
 const orderSuccess = new TemplateSuccess(events)
 
-let viewCard = new TemplateCardSelected(events)
+const viewCard = new TemplateCardSelected(events)
 const header = new Header(events)
 
+const formCheck = ['address', 'payment']
+const lastFormCheck = ['address', 'payment','phone','email']
 
 
-
-
-
-events.on('order:continueForm', (buttonOrder: HTMLButtonElement) => {
-    OpenForm(formContacts, model)
-    DisabledButton(buttonOrder, (!(iAmBuyer.getAllData().address === '') && !(iAmBuyer.getAllData().payment === '')))
+events.on('order:nextForm', () => {
+    openForm(formContacts, model)
+    disabledButtonForm(iAmBuyer, formContacts, ['address', 'payment','phone','email'])
 });
 
 events.on('order:doneForm', () => {
     
-    let orderData: IInfoCheckToBuy = {
+    const orderData: IInfoCheckToBuy = {
         payment: iAmBuyer.payment,
         email: iAmBuyer.email,
         phone: iAmBuyer.phone,
@@ -73,11 +68,11 @@ events.on('order:doneForm', () => {
         items: basketModel.getListOfProductsToBuy.map((item) => item.id)
     }
     
-    ApiItems.postProduct(orderData)
+    apiItems.postProduct(orderData)
         .then((response) => {
             if ('total' in response) {
                 orderSuccess.totalPrice = response.total
-                ClearSuccess (
+                clearSuccess (
                     model, 
                     basketModel, 
                     iAmBuyer, 
@@ -98,86 +93,62 @@ events.on('order:doneForm', () => {
     
 });
 
-events.on('order:end', (buttonOrder: HTMLButtonElement) => {
-    DisabledButton(buttonOrder, (!(iAmBuyer.getAllData().phone === '') && !(iAmBuyer.getAllData().email === '') && !(iAmBuyer.getAllData().address === '') && !(iAmBuyer.getAllData().payment === '')))
-});
 
-events.on('order:continue', (buttonOrder: HTMLButtonElement) => {
-    DisabledButton(buttonOrder, (!(iAmBuyer.getAllData().address === '') && !(iAmBuyer.getAllData().payment === '')))
-});
-
-events.on('order:toggleButtonActive', (buttons: HTMLButtonElement[]) => {
-    buttons.forEach(button => {
-        if (button.classList.contains('button_alt-active')) {
-            button.classList.remove('button_alt-active')
-        } else {
-            button.classList.add('button_alt-active')
-            iAmBuyer.setValue('payment', button.name)
-        }
-        
-    }) 
-});
-
-events.on('order:buttonActive', (button: HTMLButtonElement) => {
-    button.classList.add('button_alt-active')
+events.on('order:buttonActive', (button: {name: string}) => {
+    formAdressAndPaiment.paiment = button.name
     iAmBuyer.setValue('payment', button.name)
-    CheckFormErrors(iAmBuyer, formAdressAndPaiment)
+    disabledButtonForm(iAmBuyer, formAdressAndPaiment, formCheck)
 });
 
-events.on('order:inputEmail', (input: HTMLInputElement) => {
-    iAmBuyer.setValue('email', input.value)
-    CheckFinalFormErrors(iAmBuyer, formContacts)
+events.on('order:inputAddress', (input: {address: string}) => {
+    iAmBuyer.setValue('address', input.address)
+    disabledButtonForm(iAmBuyer, formAdressAndPaiment, formCheck)
 });
 
-events.on('order:inputPhone', (input: HTMLInputElement) => {
-    iAmBuyer.setValue('phone', input.value)
-    CheckFinalFormErrors(iAmBuyer, formContacts)
+events.on('order:inputEmail', (input: {email: string}) => {
+    iAmBuyer.setValue('email', input.email)
+    disabledButtonForm(iAmBuyer, formContacts, lastFormCheck)
 });
 
-
-events.on('order:inputAddress', (input: HTMLInputElement) => {
-    iAmBuyer.setValue('address', input.value)
-    CheckFormErrors(iAmBuyer, formAdressAndPaiment)
+events.on('order:inputPhone', (input: {phone: string}) => {
+    iAmBuyer.setValue('phone', input.phone)
+    disabledButtonForm(iAmBuyer, formContacts, lastFormCheck)
 });
 
-events.on('card:open', (selectedCard: HTMLElement) => {
-    let item = productsModel.getProductById(selectedCard.id)
+events.on('card:open', (cardId: {id: string}) => {
+    const item = productsModel.getProductById(cardId.id)
     if (item) {
-        OpenCard(item, basketModel, viewCard, model)
+        openCard(item, basketModel, viewCard, model)
     };
 });
 
-events.on('modal:close', () => {
-    CloseModal(model);
+
+events.on('order:ready', () => {
+    openForm(formAdressAndPaiment, model)
 });
 
 events.on('basket:open', () => {
-    OpenBasket(basketModel, basket, header, model, events);
+    openBasket(basketModel, basket, header, model, events);
 });
 
-events.on('card:inBasket', (selectedCard: HTMLElement) => {
-    if (CheckBasket(selectedCard.id, basketModel)) {
-        RemoveFromBasket(selectedCard, productsModel, basketModel, header)
-        events.on('card:inBasketText', (selectedCard: HTMLElement) => {
-            selectedCard.textContent = 'В корзину'
-        })
+
+events.on('card:inBasket', (card: {id: string}) => {
+    if (basketModel.checkProductById(card.id)) {
+        removeFromBasket(card.id, productsModel, basketModel, header)
     } else {
-        AddToBasket(selectedCard, productsModel, basketModel, header)
-        events.on('card:inBasketText', (selectedCard: HTMLElement) => {
-            selectedCard.textContent = 'Удалить из корзины'
-        })
+        addToBasket(card.id, productsModel, basketModel, header)
     }
 });
 
-events.on('card:remove', (selectedCard: HTMLElement) => {
-    RemoveFromBasket(selectedCard, productsModel, basketModel, header)
+events.on('card:remove', (selectedCard: {id: string}) => {
+    removeFromBasket(selectedCard.id, productsModel, basketModel, header)
     refreshBasket(basketModel, basket, header, events)
 });
 
-events.on('order:ready', () => {
-    OpenForm(formAdressAndPaiment, model)
+
+events.on('modal:close', () => {
+    model.close()
 });
 
-
-getApiProduct(ApiItems, productsModel, gallery, events)
+getApiProduct(apiItems, productsModel, gallery, events)
     

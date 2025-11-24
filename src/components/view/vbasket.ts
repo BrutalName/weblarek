@@ -1,4 +1,4 @@
-import { ensureElement, cloneTemplate } from "../../utils/utils";
+import { ensureElement, cloneTemplate, createElement } from "../../utils/utils";
 import { Component } from "../base/Component";
 import { IEvents } from "../base/Events";
 
@@ -30,11 +30,18 @@ export class TemplateBasket extends Component<IBasket> {
         
     }
     
-    set prise (prise: number) {
+    set price (prise: number) {
         this.basketListPrise.textContent = `${prise} синапсов`
     }
 
-    set basketIsEmpty (boolean: boolean) {
+    set checkBasketIsEmpty (boolean: boolean) {
+        this._basketList.replaceChildren();
+        if (boolean) {
+            const span = createElement('span', { className: 'basketIsEmpty' });
+            span.textContent = 'Корзина пуста'
+            this._basketList.appendChild(span)
+            this.buttonOrder.disabled = boolean
+        }
         this.buttonOrder.disabled = boolean
     }
 

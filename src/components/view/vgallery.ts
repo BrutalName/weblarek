@@ -11,7 +11,10 @@ export class Gallery extends Component<IGallery> {
         super(ensureElement('.gallery'))
     }
 
-    set Gallery(items: HTMLElement) {
-        this.container.append(items)
+    set gallery(items: HTMLElement[]) {
+        this.container.replaceChildren();
+        items.forEach((item) => {
+            this.container.appendChild(item)
+        })
     }
 }

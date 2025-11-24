@@ -19,7 +19,7 @@ abstract class Info extends Component<IBuyer> {
 
         this.buttonOrder.addEventListener('click', (event) => {
             event.preventDefault()
-            this.events.emit(buttonEvent, this.buttonOrder);
+            this.events.emit(buttonEvent);
         });
 
     }
@@ -38,27 +38,20 @@ export class TemplateOrder extends Info {
     protected _address: HTMLInputElement;
 
     constructor(protected eventsOrderButton: IEvents) {
-        super('#order', '.order__button', eventsOrderButton, 'order:continueForm');
+        super('#order', '.order__button', eventsOrderButton, 'order:nextForm');
 
         this.buttonPaiementOrder = ensureAllElements<HTMLButtonElement>('.button_alt', this.container);
         this._address = ensureElement<HTMLInputElement>('.form__input', this.container);
 
         this.buttonPaiementOrder.forEach(button => {
             button.addEventListener('click', () => {
-                if (!this.buttonPaiementOrder.some(g => g.classList.contains('button_alt-active'))) {
-                    this.events.emit('order:buttonActive', button)
-                }   else if (!button.classList.contains('button_alt-active')) {
-                    this.events.emit('order:toggleButtonActive', this.buttonPaiementOrder)
-                }
-                this.events.emit('order:continue', this.buttonOrder)
+                this.events.emit('order:buttonActive', {name: button.name})
             });
         });
 
         this._address.addEventListener('input', () => {
-            this.events.emit('order:inputAddress', this._address);
-            this.events.emit('order:continue', this.buttonOrder);
+            this.events.emit('order:inputAddress', {address: this._address.value});
         });
-        
     }
 
     set address (text: string) {
@@ -70,7 +63,16 @@ export class TemplateOrder extends Info {
             if (button.classList.contains('button_alt-active')) {
                 button.classList.remove('button_alt-active')
             }
-        })}
+        })} else {
+            this.buttonPaiementOrder.forEach((button) => {
+                if (button.classList.contains('button_alt-active') && !(button.name === text)) {
+                    button.classList.remove('button_alt-active')
+                }
+                if (!(button.classList.contains('button_alt-active')) && button.name === text) {
+                    button.classList.add('button_alt-active')
+                }
+            })
+        }
     }
 
 
@@ -87,12 +89,10 @@ export class TemplateContacts extends Info {
         this._phone = ensureElement<HTMLInputElement>('input[name="phone"]', this.container);
 
         this._email.addEventListener('input', () => {
-            this.events.emit('order:inputEmail', this._email);
-            this.events.emit('order:end', this.buttonOrder)
+            this.events.emit('order:inputEmail', {email: this._email.value});
         });
         this._phone.addEventListener('input', () => {
-            this.events.emit('order:inputPhone', this._phone);
-            this.events.emit('order:end', this.buttonOrder)
+            this.events.emit('order:inputPhone', {phone: this._phone.value});
         });
     }
     
