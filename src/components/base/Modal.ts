@@ -82,7 +82,7 @@ export function refreshBasket(basketModel: Basket, basket: TemplateBasket, heade
     } else {
         const elements: HTMLElement[] = []
         basketModel.getListOfProductsToBuy.forEach((item) => {
-            let cardBasket = new TemplateCardBasket(events)
+            const cardBasket = new TemplateCardBasket(events)
             cardBasket.cardIndex =  String(counter)
             cardBasket.cardPrice =  getPrice(item.price)
             cardBasket.cardTitle =  item.title
